@@ -16,7 +16,7 @@ def check_prime(number: int) -> Dict[str, bool]:
         if number % i == 0:
             return {"is_prime": False}
     return {"is_prime": True}
-#added comment
+#added comment test
 
 
 if __name__ == "__main__":
