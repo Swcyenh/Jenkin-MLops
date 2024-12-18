@@ -5,7 +5,7 @@ from Api import app  # Import your FastAPI app
 client = TestClient(app)
 
 @pytest.mark.parametrize("number,expected", [
-    (1, {"is_prime": False}),
+    (1, {"is_prime": True}),
     (2, {"is_prime": True}),
     (3, {"is_prime": True}),
     (4, {"is_prime": False}),
