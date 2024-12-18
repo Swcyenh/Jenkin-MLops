@@ -74,27 +74,14 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests') {
             steps {
                 script {
                     try {
                         sh '''
-                        # Run tests and generate detailed test report
+                        # Run tests
                         pytest --junitxml=test-results.xml
                         '''
-                        
-
-                        // Read and parse XML
-                        def testResults = readFile('test-results.xml')
-                        echo "XML Content: ${testResults}"
-
-                        // Use XmlParser instead of XmlSlurper
-                        def xml = new XmlParser().parseText(testResults)
-                        xml.testsuite.testcase.each { test ->
-                            def name = test.@name
-                            echo "Test Case: ${name}"
-                        }
                         withChecks('Run Tests') {
                             publishChecks name: 'Run Tests', status: 'COMPLETED', conclusion: 'SUCCESS',
                                          summary: 'All tests passed successfully.'
