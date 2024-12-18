@@ -32,6 +32,32 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                        # Install dependencies
+                        pip install pytest httpx fastapi uvicorn
+
+                        # Run tests
+                        pytest --junitxml=test-results.xml
+                        '''
+                        withChecks('Run Tests') {
+                            publishChecks name: 'Run Tests', status: 'COMPLETED', conclusion: 'SUCCESS',
+                                         summary: 'All tests passed successfully.'
+                        }
+                    } catch (e) {
+                        withChecks('Run Tests') {
+                            publishChecks name: 'Run Tests', status: 'COMPLETED', conclusion: 'FAILURE',
+                                         summary: 'Some tests failed.'
+                        }
+                        throw e
+                    }
+                }
+            }
+        }
+
         stage('Run FastAPI Application') {
             steps {
                 script {
