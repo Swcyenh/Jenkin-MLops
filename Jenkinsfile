@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     options {
-        skipDefaultCheckout() // Prevent automatic checkout check push test
+        skipDefaultCheckout() // Prevent automatic checkout check push test_3
     }
 
     stages {
