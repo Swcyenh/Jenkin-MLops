@@ -74,6 +74,7 @@ pipeline {
                 }
             }
         }
+
         stage('Run Tests') {
             steps {
                 script {
@@ -83,16 +84,17 @@ pipeline {
                         pytest --junitxml=test-results.xml
                         '''
                         
-                        // Parse and display test results
-                        def testResults = readXML(file: 'test-results.xml')
-                        testResults.testsuites.each { suite ->
-                            suite.testcase.each { test ->
-                                def name = test.@name
-                                def status = test.failure ? 'FAILURE' : 'SUCCESS'
-                                withChecks(name) {
-                                    publishChecks name: "Test: ${name}", status: 'COMPLETED', conclusion: status,
-                                                 summary: "Status: ${status}."
-                                }
+                        // Parse the XML report
+                        def testResults = readFile('test-results.xml')
+                        def xml = new XmlSlurper().parseText(testResults)
+
+                        // Iterate over test cases and publish individual results
+                        xml.testsuite.testcase.each { test ->
+                            def name = test.@name.text()
+                            def status = test.failure ? 'FAILURE' : 'SUCCESS'
+                            withChecks(name) {
+                                publishChecks name: "Test: ${name}", status: 'COMPLETED', conclusion: status,
+                                             summary: "Status: ${status}."
                             }
                         }
 
