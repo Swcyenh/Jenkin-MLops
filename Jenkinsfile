@@ -84,20 +84,17 @@ pipeline {
                         pytest --junitxml=test-results.xml
                         '''
                         
-                        // Parse the XML report
+
+                        // Read and parse XML
                         def testResults = readFile('test-results.xml')
-                        def xml = new XmlSlurper().parseText(testResults)
+                        echo "XML Content: ${testResults}"
 
-                        // Iterate over test cases and publish individual results
+                        // Use XmlParser instead of XmlSlurper
+                        def xml = new XmlParser().parseText(testResults)
                         xml.testsuite.testcase.each { test ->
-                            def name = test.@name.text()
-                            def status = test.failure ? 'FAILURE' : 'SUCCESS'
-                            withChecks(name) {
-                                publishChecks name: "Test: ${name}", status: 'COMPLETED', conclusion: status,
-                                             summary: "Status: ${status}."
-                            }
+                            def name = test.@name
+                            echo "Test Case: ${name}"
                         }
-
                         withChecks('Run Tests') {
                             publishChecks name: 'Run Tests', status: 'COMPLETED', conclusion: 'SUCCESS',
                                          summary: 'All tests passed successfully.'
