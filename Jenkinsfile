@@ -39,9 +39,9 @@ pipeline {
                         sh '''
                         #!/bin/bash
 
-                        # Stop and remove the container if it exists
-                        if docker ps | grep -q "api_running"; then
-                            echo "Stopping and removing the running container..."
+                        # Check if the container already exists
+                        if docker ps -a --format '{{.Names}}' | grep -q "^api_running$"; then
+                            echo "Container 'api_running' already exists. Removing it..."
                             docker stop api_running
                             docker rm -f api_running
                         fi
