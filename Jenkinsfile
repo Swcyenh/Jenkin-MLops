@@ -79,9 +79,23 @@ pipeline {
                 script {
                     try {
                         sh '''
-                        # Run tests
+                        # Run tests and generate detailed test report
                         pytest --junitxml=test-results.xml
                         '''
+                        
+                        // Parse and display test results
+                        def testResults = readXML(file: 'test-results.xml')
+                        testResults.testsuites.each { suite ->
+                            suite.testcase.each { test ->
+                                def name = test.@name
+                                def status = test.failure ? 'FAILURE' : 'SUCCESS'
+                                withChecks(name) {
+                                    publishChecks name: "Test: ${name}", status: 'COMPLETED', conclusion: status,
+                                                 summary: "Status: ${status}."
+                                }
+                            }
+                        }
+
                         withChecks('Run Tests') {
                             publishChecks name: 'Run Tests', status: 'COMPLETED', conclusion: 'SUCCESS',
                                          summary: 'All tests passed successfully.'
