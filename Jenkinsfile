@@ -1,18 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        GenericTrigger(
-            genericVariables: [
-                [key: 'WEBHOOK_TRIGGER', value: '$.trigger', defaultValue: '']
-            ],
-            causeString: 'Triggered by webhook',
-            token: 'push_here',
-            printContributedVariables: true,
-            printPostContent: true
-        )
-    }
-
     options {
         skipDefaultCheckout() // Prevent automatic checkout
     }
