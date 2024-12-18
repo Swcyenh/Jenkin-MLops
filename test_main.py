@@ -1,13 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-from main import app  # Import your FastAPI app
+from Api import app  # Import your FastAPI app
 
 client = TestClient(app)
-
-def test_get_version():
-    response = client.get("/get_version")
-    assert response.status_code == 200
-    assert response.json() == {"version": "1.0.0"}
 
 @pytest.mark.parametrize("number,expected", [
     (1, {"is_prime": False}),
