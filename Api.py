@@ -3,7 +3,7 @@ from typing import Dict
 import uvicorn
 #test
 app = FastAPI()
-
+#test_2
 @app.get("/get_version")
 def get_version() -> Dict[str, str]:
     return {"version": "1.0.0"}
